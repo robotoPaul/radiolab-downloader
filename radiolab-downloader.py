@@ -13,6 +13,8 @@ end_page = 1000
 title_has_to_include = []                       # Only download episodes that contain any of these strings         example: ["bilbo","hobbyte"]
 title_does_not_contain = []                     # Exclude episodes that contain any of these strings              example: ["gandalf","gray"]
 
+path = "B:\Radiolab"                            # example: C:\Music\Radiolab
+
 def get_url_content(url):
     return requests.get(url).text
 
@@ -36,11 +38,18 @@ def download_episode(episode):
     if(download_object != None):
         download_url = download_object.get('href')
         file = requests.get(download_url)
-        open(title + ".mp3", 'wb').write(file.content)
+        if(path == ""):
+            open(title + ".mp3", 'wb').write(file.content)
+        else:
+            open(path + "\\" + title + ".mp3", 'wb').write(file.content)
     return
 
 def check_existing_episode(title):
-    return os.path.exists(os.getcwd() + '\\' + title + ".mp3")
+    if(path == ""):
+        return os.path.exists(os.getcwd() + '\\' + title + ".mp3")
+    else:
+        print(path + '\\' + title + ".mp3")
+        return os.path.exists(path + '\\' + title + ".mp3")
 
 def main():
     episodes = []
