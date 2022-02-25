@@ -3,9 +3,9 @@ import bs4
 import os
 
 url_main = "https://www.wnycstudios.org"
-url_episodes = "podcasts/radiolab/podcasts"
+url_episodes = "podcasts/radiolab/podcasts"     # Use podcasts/radiolab/radio-shows for only the radio shows
 
-empty_kill_threshold = 10       # How many pages with no episodes have to occur before stopping the program
+empty_kill_threshold = 10                       # How many pages with no episodes have to occur before stopping the program
 
 start_page = 1
 end_page = 1000
