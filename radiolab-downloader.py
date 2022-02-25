@@ -42,13 +42,13 @@ def download_episode(episode):
             open(title + ".mp3", 'wb').write(file.content)
         else:
             open(path + "\\" + title + ".mp3", 'wb').write(file.content)
-    return
+            return True
+    return False
 
 def check_existing_episode(title):
     if(path == ""):
         return os.path.exists(os.getcwd() + '\\' + title + ".mp3")
     else:
-        print(path + '\\' + title + ".mp3")
         return os.path.exists(path + '\\' + title + ".mp3")
 
 def main():
@@ -70,6 +70,7 @@ def main():
 
         for episode in episodes:
             title = episode[0]
+            url = episode[1]
             for string in title_has_to_include:
                 if string not in title:
                     skip = True
@@ -88,8 +89,12 @@ def main():
 
             print("Downloading episode '" + title + "'")
             try:
-                download_episode(episode)
-                print("Successfully downloaded episode '" + title + "'")
+                has_download = download_episode(episode)
+                if(has_download):
+                    print("Successfully downloaded episode '" + title + "'")
+                else:
+                    print("Episode has no audio or download link")
+                    print(url)
             except Exception:
                 print("Couldn't download episode '" + title + "'")
     print("Finished Downloading!")
