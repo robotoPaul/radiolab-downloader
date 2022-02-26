@@ -1,6 +1,7 @@
 import requests
 import bs4
 import os
+import re
 
 url_main = "https://www.wnycstudios.org"
 url_episodes = "podcasts/radiolab/podcasts"     # Use podcasts/radiolab/radio-shows for only the radio shows
@@ -13,7 +14,7 @@ end_page = 1000
 title_has_to_include = []                       # Only download episodes that contain any of these strings         example: ["bilbo","hobbyte"]
 title_does_not_contain = []                     # Exclude episodes that contain any of these strings              example: ["gandalf","gray"]
 
-path = ""                            # example: C:\Music\Radiolab
+path = ""                                       # example: C:\Music\Radiolab        If left empty it will download the files to the same directory as the script
 
 def get_url_content(url):
     return requests.get(url).text
@@ -32,6 +33,7 @@ def get_episode_urls(url_main, url_episodes):
 def download_episode(episode):
     title = episode[0]
     url = episode[1]
+    filename = re.sub('[^A-Za-z0-9]+', ' ', title)
     content = get_url_content(url)
     soup = bs4.BeautifulSoup(content, "html.parser")
     download_object = soup.find('a', {'class': 'download-link'})
@@ -39,17 +41,18 @@ def download_episode(episode):
         download_url = download_object.get('href')
         file = requests.get(download_url)
         if(path == ""):
-            open(title + ".mp3", 'wb').write(file.content)
+            open(filename + ".mp3", 'wb').write(file.content)
         else:
-            open(path + "\\" + title + ".mp3", 'wb').write(file.content)
+            open(path + "\\" + filename + ".mp3", 'wb').write(file.content)
             return True
     return False
 
 def check_existing_episode(title):
+    filename = re.sub('[^A-Za-z0-9]+', ' ', title)
     if(path == ""):
-        return os.path.exists(os.getcwd() + '\\' + title + ".mp3")
+        return os.path.exists(os.getcwd() + '\\' + filename + ".mp3")
     else:
-        return os.path.exists(path + '\\' + title + ".mp3")
+        return os.path.exists(path + '\\' + filename + ".mp3")
 
 def main():
     episodes = []
